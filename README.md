@@ -23,6 +23,7 @@ Find the odd word, track your time, and share your result.
 ## Features
 
 - A shared daily 5×5 word puzzle
+- Unlimited local practice that never changes the daily result
 - Server-checked attempts and elapsed time
 - Shareable results and 60 days of local history
 
