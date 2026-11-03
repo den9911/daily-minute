@@ -66,3 +66,10 @@ A shared daily 5×5 word puzzle, server-checked attempts, elapsed time, result s
 [More by den9911](https://github.com/den9911) · [Report an issue](https://github.com/den9911/daily-minute/issues) · [LICENSE](LICENSE)
 
 You can hide the live timer without pausing the game; the choice stays in this browser and the final elapsed time is still shown. Wrong and correct practice choices have distinct symbols and accessible labels, so feedback does not rely on colour alone.
+
+
+## Recent improvements / Последние улучшения
+
+
+
+Startup diagnostics / Проверка запуска: `node server/index.mjs --check` checks the local address, configuration and writable data location without creating a database or starting the API. To use another port: `--port 3005`. No tokens are printed. / База и сервер при проверке не создаются; секреты не выводятся.

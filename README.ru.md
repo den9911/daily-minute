@@ -74,3 +74,10 @@ npm run check
 [Другие проекты den9911](https://github.com/den9911) · [Сообщить о проблеме](https://github.com/den9911/daily-minute/issues) · [LICENSE](LICENSE)
 
 Текущий таймер можно скрыть без остановки игры; выбор сохраняется в браузере, а итоговое время остаётся видимым. Ошибки и верные ответы в тренировке дополнены разными символами и доступными подписями — цвет не является единственной подсказкой.
+
+
+## Recent improvements / Последние улучшения
+
+
+
+Startup diagnostics / Проверка запуска: `node server/index.mjs --check` checks the local address, configuration and writable data location without creating a database or starting the API. To use another port: `--port 3005`. No tokens are printed. / База и сервер при проверке не создаются; секреты не выводятся.
