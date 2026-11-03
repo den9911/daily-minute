@@ -21,3 +21,5 @@
   @media(max-width:420px){.app-grid{grid-template-columns:1fr}.card-top{min-height:70px}.card-symbol{width:58px;height:58px}.finds-grid{grid-template-columns:1fr}.leader-grid{grid-template-columns:1fr}.home-intro h1{font-size:3.8rem}.hero-symbol{display:none}}
   @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
 }
+
+.minute-cell{position:relative}.cell-feedback{position:absolute;top:2px;right:4px;font:700 16px/1 sans-serif;pointer-events:none}@media(forced-colors:active){.cell-feedback{color:ButtonText}.minute-cell.wrong{outline:2px dashed ButtonText}.minute-cell.correct{outline:3px solid Highlight}}

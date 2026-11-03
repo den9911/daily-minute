@@ -64,3 +64,5 @@ A shared daily 5×5 word puzzle, server-checked attempts, elapsed time, result s
 ---
 
 [More by den9911](https://github.com/den9911) · [Report an issue](https://github.com/den9911/daily-minute/issues) · [LICENSE](LICENSE)
+
+You can hide the live timer without pausing the game; the choice stays in this browser and the final elapsed time is still shown. Wrong and correct practice choices have distinct symbols and accessible labels, so feedback does not rely on colour alone.
