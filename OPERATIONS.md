@@ -89,3 +89,8 @@ node --test --experimental-test-coverage tests/server.test.mjs
 ```
 
 UI interactions must also be checked in a real browser. Automated server coverage does not measure browser canvas behavior, mobile layout, or abuse resistance under a production workload.
+
+
+## Recovery verification — 11 November
+
+Day/ID/payload snapshots persist transactionally in daily_puzzles. Existing games use the frozen legacy seven-pair rule; new catalog edits affect only unpinned days. Words are bounded to 80 characters and indices to 0–24. Back up before upgrade; independently modified historical catalogs require audit. This does not add idempotent guess receipts.

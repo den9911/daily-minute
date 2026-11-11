@@ -1,3 +1,4 @@
+import {puzzleSnapshots} from './puzzle-snapshots.mjs';
 import {checkStartup} from './startup.mjs';
 import { createServer } from 'node:http';
 import { randomUUID, randomBytes, createHmac, timingSafeEqual, createHash } from 'node:crypto';
@@ -30,6 +31,7 @@ export async function createApp(options = {}) {
     }
   }
   const db = openStore(resolve(dataDir,'minute.sqlite'));
+  const puzzleFor=puzzleSnapshots(db,options.puzzleResolver);
   const appId=options.appId ?? process.env.APP_ID ?? primaryApp;
   if (appId && ![...apps.map(a=>a[0]),'mischief'].includes(appId)) throw new Error('Unknown APP_ID');
   const adminToken = options.adminToken ?? process.env.ADMIN_TOKEN ?? '';
@@ -233,15 +235,15 @@ export async function createApp(options = {}) {
           return json(res,{id,version:(existing?.version??0)+1});
         }
         if (path==='/api/minute' && method==='GET') {
-          const day=today(),puzzle=dailyPuzzle(day);
+          const day=today(),puzzle=puzzleFor(day);
           const game=db.prepare('SELECT attempts,finished,started FROM games WHERE day=? AND player=?').get(day,sid);
           const completed=db.prepare('SELECT COUNT(*) AS n FROM games WHERE day=? AND finished IS NOT NULL').get(day).n;
-          return json(res,{day,word:puzzle.word,odd:puzzle.odd,game:game??null,completed,...(game ? {cells:Array.from({length:25},(_,i)=>i===puzzle.answer?puzzle.odd:puzzle.word)}:{})});
+          return json(res,{day,puzzleId:puzzle.id,word:puzzle.word,odd:puzzle.odd,game:game??null,completed,...(game ? {cells:Array.from({length:25},(_,i)=>i===puzzle.answer?puzzle.odd:puzzle.word)}:{})});
         }
         if (path==='/api/minute/start' && method==='POST') {
-          const day=today(),p=dailyPuzzle(day);
+          const day=today(),p=puzzleFor(day);
           db.prepare('INSERT OR IGNORE INTO games(day,player,started) VALUES(?,?,?)').run(day,sid,Date.now());
-          return json(res,{day,cells:Array.from({length:25},(_,i)=>i===p.answer?p.odd:p.word)});
+          return json(res,{day,puzzleId:p.id,cells:Array.from({length:25},(_,i)=>i===p.answer?p.odd:p.word)});
         }
         if (path==='/api/minute/guess' && method==='POST') {
           integer(input.index,0,24); const day=today();
@@ -249,7 +251,7 @@ export async function createApp(options = {}) {
           const game=db.prepare('SELECT * FROM games WHERE day=? AND player=?').get(day,sid);
           if (!game) throw new HttpError(400,'Сначала начните игру.');
           if (game.finished) throw new HttpError(409,'Сегодняшняя задача уже решена.');
-          const correct=input.index===dailyPuzzle(day).answer;
+          const correct=input.index===puzzleFor(day).answer;
           const finished=correct ? Date.now():null;
           db.prepare('UPDATE games SET attempts=attempts+1,finished=? WHERE day=? AND player=?').run(finished,day,sid);
           return json(res,{correct,attempts:game.attempts+1,elapsed:correct ? Math.max(0,finished-game.started):null});
