@@ -34,7 +34,7 @@ export async function mount(){
     $('#app').innerHTML=`<div class="narrow"><div class="row between"><p class="small muted">${escape(state.day)} · find the different word</p>${timerMarkup('elapsed')}</div><div class="minute-board">${cells.map((word,i)=>`<button class="minute-cell" data-index="${i}" aria-label="${escape(word)}, cell ${i+1}">${escape(word)}</button>`).join('')}</div><p id="hint" class="small muted" role="status" aria-live="polite">Take your time. Tap the word that is different.</p></div>`;
     wireTimer();timer=setInterval(()=>{if($('#elapsed'))$('#elapsed').textContent=`${Math.max(0,(Date.now()-started)/1000).toFixed(1)} s`;},100);
     let pending=false;
-    $$('.minute-cell').forEach(button=>action(button,async()=>{if(pending)return;pending=true;try{const response=await api('/api/minute/guess',{index:Number(button.dataset.index),day:state.day});if(response.correct){clearInterval(timer);state=await api('/api/minute');result(state.game);}else{markCell(button,false);$('#hint').textContent=`Not that one. Attempts so far: ${response.attempts}. Take another look.`;}}finally{pending=false;}}));
+    $$('.minute-cell').forEach(button=>action(button,async()=>{if(pending)return;pending=true;try{const response=await api('/api/minute/guess',{index:Number(button.dataset.index),day:state.day});if(response.correct){clearInterval(timer);state=await api('/api/minute');result(state.game);}else{markCell(button,false);$('#hint').textContent=`Not that one. Attempts so far: ${response.attempts}. Take another look.`;}}catch(error){$('#hint').textContent='Your attempt is unconfirmed. Refresh the page before retrying.';throw error;}finally{pending=false;}}));
   }
   if(state.game?.finished)result(state.game);
   else if(state.game){board(state.cells);}

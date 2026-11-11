@@ -32,6 +32,7 @@ export async function createApp(options = {}) {
   }
   const db = openStore(resolve(dataDir,'minute.sqlite'));
   const puzzleFor=puzzleSnapshots(db,options.puzzleResolver);
+  let reportedFailure=false;
   const appId=options.appId ?? process.env.APP_ID ?? primaryApp;
   if (appId && ![...apps.map(a=>a[0]),'mischief'].includes(appId)) throw new Error('Unknown APP_ID');
   const adminToken = options.adminToken ?? process.env.ADMIN_TOKEN ?? '';
@@ -310,9 +311,10 @@ export async function createApp(options = {}) {
       if (compressed) res.setHeader('Content-Encoding','gzip');
       res.writeHead(200,{'Content-Type':type,'Content-Length':bytes.length});res.end(req.method==='HEAD'?undefined:bytes);
     } catch (error) {
+      if(req.aborted||res.destroyed)return;
       if (res.headersSent) return res.end();
       const status=error.status ?? (error.code==='ENOENT' || error.code==='ENOTDIR' ? 404:500);
-      if (status===500) console.error(error);
+      if(status===500&&!reportedFailure){console.error('Request processing failed; check storage and refresh the day before retrying');reportedFailure=true;}
       json(res,{error:status===500?'Что-то пошло не так. Попробуйте ещё раз.':status===404?'Не найдено.':error.message},status);
     }
   });

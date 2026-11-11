@@ -94,3 +94,8 @@ UI interactions must also be checked in a real browser. Automated server coverag
 ## Recovery verification — 11 November
 
 Day/ID/payload snapshots persist transactionally in daily_puzzles. Existing games use the frozen legacy seven-pair rule; new catalog edits affect only unpinned days. Words are bounded to 80 characters and indices to 0–24. Back up before upgrade; independently modified historical catalogs require audit. This does not add idempotent guess receipts.
+
+
+## Recovery acceptance — 12 November
+
+Real child exits at the snapshot COMMIT boundary leave zero or one pinned day. Forty partial TCP bodies leave no snapshot; the next valid start works. SQL-trigger rejection rolls back, fixed warnings are bounded to one per server instance and omit private SQL. Refresh the day before retrying an unconfirmed attempt. Hardware power-loss, long-running memory benchmarks and idempotent guess receipts are not claimed.
